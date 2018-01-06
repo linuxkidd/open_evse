@@ -1,4 +1,7 @@
 Change Log
+D4.12.0 20180105 MJK
+- Added support for ZMPT101B based Voltage reading
+- Fixed typo in some VOLTMETER code ( extra right parens only present when VOLTMETER is defined )
 
 D4.11.0 20171207 SCL
 - rewrite Gfi::SelfTest() so that it doesn't hang when the test pin has hardware failure

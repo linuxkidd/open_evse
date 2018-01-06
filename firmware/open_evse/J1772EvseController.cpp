@@ -643,8 +643,8 @@ uint8_t J1772EVSEController::doPost()
 
 #ifdef AUTOSVCLEVEL
   if (AutoSvcLevelEnabled()) {
-#ifdef OPENEVSE_2
-    // For OpenEVSE II, there is a voltmeter for auto L1/L2.
+#ifdef VOLTMETER
+    // If VOLTMETER defined, use it for auto L1/L2.
     uint32_t long ac_volts = ReadVoltmeter();
     if (ac_volts > L2_VOLTAGE_THRESHOLD) {
       svcState = L2;
@@ -661,7 +661,7 @@ uint8_t J1772EVSEController::doPost()
     g_OBD.LcdMsg_P(g_psAutoDetect,(svcState == L2) ? g_psLevel2 : g_psLevel1);
 #endif //LCD16x2
 
-#else //!OPENEVSE_2
+#else //!VOLTMETER
 
     delay(150); // delay reading for stable pilot before reading
     int reading = adcPilot.read(); //read pilot
@@ -1774,6 +1774,81 @@ void J1772EVSEController::SetVoltmeter(uint16_t scale,uint32_t offset)
   eeprom_write_dword((uint32_t*)EOFS_VOLT_OFFSET,offset);
 }
 
+#ifdef ZMPT101B
+// Mostly copied from readAmmeter() fuction above
+uint32_t J1772EVSEController::ReadVoltmeter()
+{
+  WDT_RESET();
+
+  unsigned long sum = 0;
+  unsigned int zero_crossings = 0;
+  unsigned long last_zero_crossing_time = 0, now_ms;
+  long last_sample = -1; // should be impossible - the A/d is 0 to 1023.
+  unsigned int sample_count = 0;
+  for(unsigned long start = millis(); ((now_ms = millis()) - start) < VOLTMETER_POLL_INTERVAL; ) {
+    long sample = (long) adcVoltMeter.read();
+    // If this isn't the first sample, and if the sign of the value differs from the
+    // sign of the previous value, then count that as a zero crossing.
+    if (last_sample != -1 && ((last_sample > 512) != (sample > 512))) {
+      // Once we've seen a zero crossing, don't look for one for a little bit.
+      // It's possible that a little noise near zero could cause a two-sample
+      // inversion.
+      if ((now_ms - last_zero_crossing_time) > VOLTMETER_ZERO_DEBOUNCE_INTERVAL) {
+        zero_crossings++;
+        last_zero_crossing_time = now_ms;
+      }
+    }
+    last_sample = sample;
+    switch(zero_crossings) {
+    case 0:
+      continue; // Still waiting to start sampling
+    case 1:
+    case 2:
+      // Gather the sum-of-the-squares and count how many samples we've collected.
+      sum += (unsigned long)((sample - 512) * (sample - 512));
+      sample_count++;
+      continue;
+    case 3:
+      // The answer is the square root of the mean of the squares.
+      uint32_t mv = MovingAverage(ulong_sqrt(sum / sample_count));
+
+      // Added scaling and offset adjustments to maintain compatibility with earlier ReadVoltmeter function use
+      if (mv != 0xffffffff) {
+        m_Voltage = mv * m_VoltScaleFactor - m_VoltOffset;  // subtract it
+        if (m_Voltage < 0) {
+          m_Voltage = 0;
+        }
+      }
+      WDT_RESET();
+      return m_Voltage;
+    }
+  }
+  // If we get here, we're running on pixies from the air
+  m_Voltage = 0;
+  WDT_RESET();
+  return 0;
+}
+
+// Copied from MovingAverage() function above.
+uint32_t vMovingAverage(uint32_t vsamp)
+{
+  static uint32_t vtot = 0;
+  static int8_t vcuridx = 0;
+
+  if (vcuridx == 0) {
+    vtot = 0;
+  }
+
+  vtot += vsamp;
+
+  if (++vcuridx == MA_PTS) {
+    vcuridx = 0;
+    return vtot >> MA_BITS; // tot / MA_PTS
+  }
+  return 0xffffffff;
+}
+
+#else // !ZMPT101B
 uint32_t J1772EVSEController::ReadVoltmeter()
 {
   unsigned int peak = 0;
@@ -1784,6 +1859,7 @@ uint32_t J1772EVSEController::ReadVoltmeter()
   m_Voltage = ((uint32_t)peak) * ((uint32_t)m_VoltScaleFactor) + m_VoltOffset;
   return m_Voltage;
 }
+#endif // ZMPT101B
 #endif // VOLTMETER
 
 

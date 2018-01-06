@@ -366,6 +366,9 @@ public:
   void SetVoltmeter(uint16_t scale,uint32_t offset);
   uint32_t ReadVoltmeter();
   int32_t GetVoltage() { return m_Voltage; }
+  #ifdef ZMPT101B
+    uint32_t vMovingAverage(uint32_t vsamp);
+  #endif // ZMPT101B
 #else
   uint32_t GetVoltage() { return (uint32_t)-1; }
 #endif // VOLTMETER

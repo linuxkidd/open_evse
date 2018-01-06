@@ -136,6 +136,62 @@
 //#define DEFAULT_VOLT_OFFSET (12018)     // calibrated for lincomatic's OEII
 #endif // OPENEVSE_2
 
+// Support for Michale Kidd's ( aka linuxkidd ) Voltmeter modification using ZMPT101B based US Amazon ASIN: B01CN7QFWO on pin3
+#define ZMPT101B
+
+#ifdef ZMPT101B
+  // If the AC voltage is > 150,000 mV, then it's L2. Else, L1.
+  #define L2_VOLTAGE_THRESHOLD (150000)
+  #define VOLTMETER
+
+  // 35 ms is just a bit longer than 1.5 cycles at 50 Hz
+  // The code returns after 3 crossings anyway, so having this higher won't impact the results
+  #define VOLTMETER_POLL_INTERVAL 35
+
+  // Once we detect a zero-crossing, we should not look for one for another quarter cycle or so.
+  // 1/4 cycle at 50 Hz is 5 ms
+  // 1/4 cycle at 60 Hz is 4 ms.
+  #define VOLTMETER_ZERO_DEBOUNCE_INTERVAL 4
+
+  /*
+   *  -- Instructions on how to determine proper scale & offset values
+   *   1) Set 'DEFAULT_VOLT_SCALE_FACTOR' to 1
+   *   2) Set 'DEFAULT_VOLT_OFFSET' to 0
+   *   3) Plug into low voltage ( 120 Vac in the US for example )
+   *   4) Have a voltmeter reading AC Volts across the input legs to the OpenEVSE
+   *   5) Using RAPI command $GG, monitor the provided voltage output over several minutes, hopefully with relatively stable Voltmeter readings
+   *   6) Make note of:
+   *      - the AC Volts reading from the voltmeter * 1000 (converted to mV, used as mVlow in formulas below )
+   *      - the stabilized 'voltage' output from $GG ( used as Mlow in formulas below )
+   *   7) Repeat steps 3 through 6 for high voltage ( 240 Vac in the US for example )
+   *      - The 240 Vac 'AC volts' converted to mV, used as mVhigh in formulas below
+   *      - The 240 Vac '$GG output' will be used as Mhigh in the formulas below
+   *   8) Calculate the scale factor with the following formula:
+   *      - ( mVhigh - mVlow ) / ( Mhigh - Mlow ) == ScaleFactor
+   *      - Example using measurements from LK:
+   *        ( 251800 - 124800 ) / ( 192 - 98 ) == 1351.06 (Rounded to 1351)
+   *   9) Calculate the offset with the following formula:
+   *      - ( Mlow * ScaleFactor ) - ( mVlow ) == Offset
+   *      - Test the value from Offset and adjust for better broad voltage accuracy
+   *        + This is needed due to rounding the ScaleFactor.
+   *      - Example using measurements from LK:
+   *        (  98 * 1351 ) - ( 124800 ) =   7604 mV ( Initial Calculated Offset )
+   *             (  98 * 1351 ) - 7604  = 124794 mV ( Delta of  -6 mV from actual reading )
+   *             ( 192 * 1351 ) - 7604  = 251788 mV ( Delta of -12 mV from actual reading )
+   *                   ( -6 + -12 ) / 2 =     -9 mV Offset Delta
+   *                      ( 7604 + -9 ) =   7595 mV ( Final Offset )
+   *   --NOTE: Your maximum precision will be equivalent to your 1/2 * ScaleFactor.
+   *     - Using the example data above, maximum precision is 684 mV
+   */
+
+  // Voltscale and Offset must be compatible with uint32_t.
+  #define DEFAULT_VOLT_SCALE_FACTOR (1351)  // Calibrated for linuxkidd OpenEVSE build using US Amazon ASIN: B01CN7QFWO on pin3
+  #define DEFAULT_VOLT_OFFSET       (7595)  // Calibrated for linuxkidd OpenEVSE build using US Amazon ASIN: B01CN7QFWO on pin3
+
+#endif // ZMPT101B
+
+
+
 // GFI support
 #define GFI
 
@@ -370,9 +426,13 @@
 #define PILOT_PIN 1 // analog pilot voltage reading pin ADCx
 #define PP_PIN 2 // PP_READ - ADC2
 #ifdef VOLTMETER
-// N.B. Note, ADC2 is already used as PP_PIN so beware of potential clashes
-// voltmeter pin is ADC2 on OPENEVSE_2
-#define VOLTMETER_PIN 2 // analog AC Line voltage voltmeter pin ADCx
+  #ifdef OPENEVSE_2
+    // N.B. Note, ADC2 is already used as PP_PIN so beware of potential clashes
+    // voltmeter pin is ADC2 on OPENEVSE_2
+    #define VOLTMETER_PIN 2 // analog AC Line voltage voltmeter pin ADCx
+  #else // !OPENEVSE_2  Presume ZMPT101B
+    #define VOLTMETER_PIN 3 // If using the ZMPT101B modification to OpenEVSE 4 boards
+  #endif // OPENEVSE_2
 #endif // VOLTMETER
 #ifdef OPENEVSE_2
 // This pin must match the last write to CHARGING_PIN, modulo a delay. If
