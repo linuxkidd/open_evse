@@ -88,7 +88,7 @@ colors:
  TEAL 6
  BLUE 4
  VIOLET 5
- WHITE 7 
+ WHITE 7
 
  $FB 7*03 - set backlight to white
 FD - disable EVSE
@@ -308,12 +308,12 @@ class EvseRapiProcessor {
 
   void response(uint8_t ok);
   void appendChk(char *buf);
-  
+
 #ifdef RAPI_SENDER
   char sendbuf[RAPIS_BUFLEN]; // input buffer
   void _sendCmd(const char *cmdstr);
 #endif // RAPI_SENDER
-  
+
 public:
   EvseRapiProcessor();
 

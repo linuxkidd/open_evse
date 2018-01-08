@@ -8,7 +8,7 @@ static const char s_psDisabled[] PROGMEM = "disabled";
 
 CLI::CLI()
 {
-  m_CLIstrCount = 0; 
+  m_CLIstrCount = 0;
   m_strBuf = g_sTmp;
   m_strBufLen = sizeof(g_sTmp);
 }
@@ -59,41 +59,41 @@ void CLI::getInput()
     Serial.print(inbyte);
     if (inbyte != 13) { // CR
       if (((inbyte >= 'a') && (inbyte <= 'z')) || ((inbyte >= '0') && (inbyte <= '@') || (inbyte == ' ')) ) { //sar - allow ?
-	m_CLIinstr[m_CLIstrCount] = inbyte;
-	m_CLIstrCount++;
+        m_CLIinstr[m_CLIstrCount] = inbyte;
+        m_CLIstrCount++;
       }
  else if (m_CLIstrCount && ((inbyte == 8) || (inbyte == 127))) {
-	m_CLIstrCount--;
+        m_CLIstrCount--;
       }
     }
 
     if ((inbyte == 13) || (m_CLIstrCount == CLI_BUFLEN-1)) { // if enter was pressed or max chars reached
       m_CLIinstr[m_CLIstrCount] = '\0';
       printlnn(); // print a newline
-      
-      if (strcmp_P(m_CLIinstr, PSTR("show")) == 0){ //if match SHOW 
+
+      if (strcmp_P(m_CLIinstr, PSTR("show")) == 0){ //if match SHOW
         info();
-        
+
         println_P(PSTR("Settings"));
-	print_P(PSTR("Service level: L"));
-	Serial.println((int)g_EvseController.GetCurSvcLevel()); 
+        print_P(PSTR("Service level: L"));
+        Serial.println((int)g_EvseController.GetCurSvcLevel());
         print_P(PSTR("Current capacity (Amps): "));
-        Serial.println((int)g_EvseController.GetCurrentCapacity()); 
+        Serial.println((int)g_EvseController.GetCurrentCapacity());
         print_P(PSTR("Min Current Capacity: "));
         Serial.println(MIN_CURRENT_CAPACITY_J1772);
         print_P(PSTR("Max Current Capacity: "));
         Serial.println((g_EvseController.GetCurSvcLevel() == 2) ? MAX_CURRENT_CAPACITY_L2 : MAX_CURRENT_CAPACITY_L1);
-	print_P(PSTR("Vent Required: "));
-	println_P(g_EvseController.VentReqEnabled() ? s_psEnabled : s_psDisabled);
+        print_P(PSTR("Vent Required: "));
+        println_P(g_EvseController.VentReqEnabled() ? s_psEnabled : s_psDisabled);
          print_P(PSTR("Diode Check: "));
-	println_P(g_EvseController.DiodeCheckEnabled() ? s_psEnabled : s_psDisabled);
+        println_P(g_EvseController.DiodeCheckEnabled() ? s_psEnabled : s_psDisabled);
 
 #ifdef ADVPWR
-	print_P(PSTR("Ground Check: "));
-	println_P(g_EvseController.GndChkEnabled() ? s_psEnabled : s_psDisabled);
-	print_P(PSTR("Stuck Relay Check: "));
-	println_P(g_EvseController.StuckRelayChkEnabled() ? s_psEnabled : s_psDisabled);
-#endif // ADVPWR           
+        print_P(PSTR("Ground Check: "));
+        println_P(g_EvseController.GndChkEnabled() ? s_psEnabled : s_psDisabled);
+        print_P(PSTR("Stuck Relay Check: "));
+        println_P(g_EvseController.StuckRelayChkEnabled() ? s_psEnabled : s_psDisabled);
+#endif // ADVPWR
         // Start Delay Timer feature - GoldServe
 #ifdef DELAYTIMER
         print_P(PSTR("Delay Timer: "));
@@ -127,7 +127,7 @@ void CLI::getInput()
         Serial.print(g_CurrTime.second(), DEC);
         // End Delay Timer feature - GoldServe
 #endif //#ifdef DELAYTIMER
-      } 
+      }
  else if ((strcmp_P(m_CLIinstr, PSTR("help")) == 0) || (strcmp_P(m_CLIinstr, PSTR("?")) == 0)){ // string compare
         println_P(PSTR("Help Commands"));
         printlnn();
@@ -140,7 +140,7 @@ void CLI::getInput()
  println_P(PSTR("timer - Delay timer commands"));
 #endif //#ifdef DELAYTIMER
  // End Delay Timer feature - GoldServe
- } 
+ }
  else if (strcmp_P(m_CLIinstr, PSTR("set")) == 0) { // string compare
    println_P(PSTR("Set Commands - Usage: set amp"));
    printlnn();
@@ -231,11 +231,11 @@ void CLI::getInput()
      if(g_EvseController.SetCurrentCapacity(amp,1)) {
        println_P(PSTR("Invalid Setting"));
      }
-	  
+
      print_P(PSTR("Max current: ")); // print to the terminal
      Serial.print((int)g_EvseController.GetCurrentCapacity());
      print_P(PSTR("A"));
-   } 
+   }
    else {
      goto unknown;
    }
@@ -244,7 +244,7 @@ void CLI::getInput()
 #ifdef DELAYTIMER
  else if (strncmp_P(m_CLIinstr, PSTR("dt"), 2) == 0){ // string compare
    char *p = m_CLIinstr + 3;
-        
+
    if (strncmp_P(p,PSTR("set"),3) == 0) {
      p += 4;
      println_P(PSTR("Set Date/Time (mm/dd/yy hh:mm)"));
@@ -263,12 +263,12 @@ void CLI::getInput()
      print_P(PSTR("Minute (mm): "));
      g_min = getInt();
      Serial.println(g_min);
-          
+
      if (g_month + g_day + g_year + g_hour + g_min) {
        g_RTC.adjust(DateTime(g_year, g_month, g_day, g_hour, g_min, 0));
        println_P(PSTR("Date/Time Set"));
      } else {
-       println_P(PSTR("Date/Time NOT Set")); 
+       println_P(PSTR("Date/Time NOT Set"));
      }
    }
    else {
@@ -287,11 +287,11 @@ void CLI::getInput()
      Serial.println();
      println_P(PSTR("Use 'dt set' to set the system date/time"));
    }
-        
+
  }
  else if (strncmp_P(m_CLIinstr, PSTR("timer"), 5) == 0){ // string compare
    char *p = m_CLIinstr + 6;
-        
+
    if (strncmp_P(p,PSTR("set start"),9) == 0) {
      println_P(PSTR("Set Start Time (hh:mm)"));
      print_P(PSTR("Hour (hh): "));
@@ -334,7 +334,7 @@ void CLI::getInput()
      Serial.print(g_DelayTimer.GetStopTimerMin(), DEC);
      println_P(PSTR(" min"));
      if (!g_DelayTimer.IsTimerValid()){
-       println_P(PSTR("Start and Stop times can not be the same!"));  
+       println_P(PSTR("Start and Stop times can not be the same!"));
      }
      println_P(PSTR(""));
      println_P(PSTR("Use 'timer enable/disable' to enable/disable timer function"));
@@ -346,7 +346,7 @@ void CLI::getInput()
  else { // if the input text doesn't match any defined above
  unknown:
    println_P(PSTR("Unknown Command -- type help for command list")); // echo back to the terminal
- } 
+ }
       printlnn();
       print_P(PSTR("OpenEVSE> "));
       g_CLI.flush();

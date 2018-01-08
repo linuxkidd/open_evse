@@ -1,21 +1,21 @@
 /**************************************************************************/
-/*! 
+/*!
  * 2016 hacked from Adafruit_MCP9808.cpp by Sam C. Lin
- 
+
     @file     Adafruit_MCP9808.cpp
     @author   K.Townsend (Adafruit Industries)
-	@license  BSD (see license.txt)
-	
-	I2C Driver for Microchip's MCP9808 I2C Temp sensor
+        @license  BSD (see license.txt)
 
-	This is a library for the Adafruit MCP9808 breakout
-	----> http://www.adafruit.com/products/1782
-		
-	Adafruit invests time and resources providing this open source code, 
-	please support Adafruit and open-source hardware by purchasing 
-	products from Adafruit!
+        I2C Driver for Microchip's MCP9808 I2C Temp sensor
 
-	@section  HISTORY
+        This is a library for the Adafruit MCP9808 breakout
+        ----> http://www.adafruit.com/products/1782
+
+        Adafruit invests time and resources providing this open source code,
+        please support Adafruit and open-source hardware by purchasing
+        products from Adafruit!
+
+        @section  HISTORY
 
     v1.0 - First release
 */
@@ -53,13 +53,13 @@ int16_t MCP9808::read16(uint8_t reg) {
   Wire.beginTransmission(MCP9808_ADDRESS);
   wiresend(reg);
   Wire.endTransmission();
-  
+
   Wire.requestFrom((uint8_t)MCP9808_ADDRESS, (uint8_t)2);
   val = wirerecv();
   val <<= 8;
-  val |= wirerecv();  
+  val |= wirerecv();
 
-  return val;  
+  return val;
 }
 
 // return C*10

@@ -11,17 +11,17 @@ class CLI {
 public:
   CLI();
   void Init();
-  void println(char *s) { 
-    Serial.println(s); 
+  void println(char *s) {
+    Serial.println(s);
   }
   void println_P(const char PROGMEM *s);
-  void print(char *s) { 
-    Serial.print(s); 
+  void print(char *s) {
+    Serial.print(s);
   }
   void print_P(const char PROGMEM *s);
   void printlnn();
-  void flush() { 
-    Serial.flush(); 
+  void flush() {
+    Serial.flush();
   }
   void getInput();
   uint8_t getInt();

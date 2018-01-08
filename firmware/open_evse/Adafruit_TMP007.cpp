@@ -1,16 +1,16 @@
-/*************************************************** 
+/***************************************************
   This is a library for the TMP007 Temp Sensor
 
-  Designed specifically to work with the Adafruit TMP007 Breakout 
+  Designed specifically to work with the Adafruit TMP007 Breakout
   ----> https://www.adafruit.com/products/2023
 
-  These displays use I2C to communicate, 2 pins are required to  
+  These displays use I2C to communicate, 2 pins are required to
   interface
-  Adafruit invests time and resources providing this open source code, 
-  please support Adafruit and open-source hardware by purchasing 
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit and open-source hardware by purchasing
   products from Adafruit!
 
-  Written by Limor Fried/Ladyada for Adafruit Industries.  
+  Written by Limor Fried/Ladyada for Adafruit Industries.
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
@@ -28,8 +28,8 @@ Adafruit_TMP007::Adafruit_TMP007(uint8_t i2caddr) {
 boolean Adafruit_TMP007::begin(uint16_t samplerate) {
 //don't need - open_evse.ino does it  Wire.begin();
 
-  write16(TMP007_CONFIG, TMP007_CFG_MODEON | TMP007_CFG_ALERTEN | 
-	  TMP007_CFG_TRANSC | samplerate);
+  write16(TMP007_CONFIG, TMP007_CFG_MODEON | TMP007_CFG_ALERTEN |
+          TMP007_CFG_TRANSC | samplerate);
   write16(TMP007_STATMASK, TMP007_STAT_ALERTEN |TMP007_STAT_CRTEN);
   // enable conversion ready alert
 
@@ -76,7 +76,7 @@ int16_t Adafruit_TMP007::readRawDieTemperature(void) {
 #endif
 
   Serial.print("Raw Tambient: 0x"); Serial.print (raw, HEX);
-  
+
 
   float v = raw/4;
   v *= 0.03125;
@@ -103,7 +103,7 @@ int16_t Adafruit_TMP007::readRawVoltage(void) {
   v /= 1000;
   Serial.print(" ("); Serial.print(v); Serial.println(" uV)");
 #endif
-  return raw; 
+  return raw;
 }
 */
 
@@ -112,15 +112,15 @@ int16_t Adafruit_TMP007::readRawVoltage(void) {
 uint16_t Adafruit_TMP007::read16(uint8_t a) {
   uint16_t ret;
 
-  Wire.beginTransmission(_addr); // start transmission to device 
+  Wire.beginTransmission(_addr); // start transmission to device
 #if (ARDUINO >= 100)
   Wire.write(a); // sends register address to read from
 #else
   Wire.send(a); // sends register address to read from
 #endif
   Wire.endTransmission(); // end transmission
-  
-  Wire.beginTransmission(_addr); // start transmission to device 
+
+  Wire.beginTransmission(_addr); // start transmission to device
   Wire.requestFrom(_addr, (uint8_t)2);// send data n-bytes read
 #if (ARDUINO >= 100)
   ret = Wire.read(); // receive DATA
@@ -137,7 +137,7 @@ uint16_t Adafruit_TMP007::read16(uint8_t a) {
 }
 
 void Adafruit_TMP007::write16(uint8_t a, uint16_t d) {
-  Wire.beginTransmission(_addr); // start transmission to device 
+  Wire.beginTransmission(_addr); // start transmission to device
 #if (ARDUINO >= 100)
   Wire.write(a); // sends register address to read from
   Wire.write(d>>8);  // write data

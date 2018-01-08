@@ -33,7 +33,7 @@
 #define EVSE_STATE_GFI_TEST_FAILED 0x09 // GFI self-test failure
 #define EVSE_STATE_OVER_TEMPERATURE 0x0A // over temperature error shutdown
 #define EVSE_FAULT_STATE_END EVSE_STATE_OVER_TEMPERATURE
-           
+
 #define EVSE_STATE_SLEEPING 0xfe // waiting for timer
 #define EVSE_STATE_DISABLED 0xff // disabled
 
@@ -192,23 +192,23 @@ class J1772EVSEController {
   void chargingOn();
   void chargingOff();
   uint8_t chargingIsOn() { return m_bVFlags & ECVF_CHARGING_ON; }
-  void setFlags(uint16_t flags) { 
-    m_wFlags |= flags; 
+  void setFlags(uint16_t flags) {
+    m_wFlags |= flags;
   }
-  void clrFlags(uint16_t flags) { 
-    m_wFlags &= ~flags; 
+  void clrFlags(uint16_t flags) {
+    m_wFlags &= ~flags;
   }
-  void setVFlags(uint8_t flags) { 
-    m_bVFlags |= flags; 
+  void setVFlags(uint8_t flags) {
+    m_bVFlags |= flags;
   }
-  void clrVFlags(uint8_t flags) { 
-    m_bVFlags &= ~flags; 
+  void clrVFlags(uint8_t flags) {
+    m_bVFlags &= ~flags;
   }
-  void setVFlags2(uint8_t flags) { 
-    m_bVFlags2 |= flags; 
+  void setVFlags2(uint8_t flags) {
+    m_bVFlags2 |= flags;
   }
-  void clrVFlags2(uint8_t flags) { 
-    m_bVFlags2 &= ~flags; 
+  void clrVFlags2(uint8_t flags) {
+    m_bVFlags2 &= ~flags;
   }
 
 #ifdef TIME_LIMIT
@@ -244,14 +244,14 @@ public:
   uint16_t GetFlags() { return m_wFlags; }
   uint8_t GetVFlags() { return m_bVFlags; }
   uint8_t GetVFlags2() { return m_bVFlags2; }
-  uint8_t GetState() { 
-    return m_EvseState; 
+  uint8_t GetState() {
+    return m_EvseState;
   }
-  uint8_t GetPrevState() { 
-    return m_PrevEvseState; 
+  uint8_t GetPrevState() {
+    return m_PrevEvseState;
   }
-  int StateTransition() { 
-    return (m_EvseState != m_PrevEvseState) ? 1 : 0; 
+  int StateTransition() {
+    return (m_EvseState != m_PrevEvseState) ? 1 : 0;
   }
 
   void SaveEvseFlags() {
@@ -267,45 +267,45 @@ public:
   int8_t InHardFault() { return (m_bVFlags & ECVF_HARD_FAULT) ? 1 : 0; }
   unsigned long GetResetMs();
 
-  uint8_t GetCurrentCapacity() { 
-    return m_CurrentCapacity; 
+  uint8_t GetCurrentCapacity() {
+    return m_CurrentCapacity;
   }
   uint8_t GetMaxCurrentCapacity();
   int SetCurrentCapacity(uint8_t amps,uint8_t updatelcd=0,uint8_t nosave=0);
 
-  time_t GetElapsedChargeTime() { 
-    return m_ElapsedChargeTime+m_AccumulatedChargeTime; 
+  time_t GetElapsedChargeTime() {
+    return m_ElapsedChargeTime+m_AccumulatedChargeTime;
   }
-  time_t GetElapsedChargeTimePrev() { 
-    return m_ElapsedChargeTimePrev; 
+  time_t GetElapsedChargeTimePrev() {
+    return m_ElapsedChargeTimePrev;
   }
-  time_t GetChargeOffTime() { 
-    return m_ChargeOffTime; 
+  time_t GetChargeOffTime() {
+    return m_ChargeOffTime;
   }
   void Calibrate(PCALIB_DATA pcd);
-  uint8_t GetCurSvcLevel() { 
-    return (m_wFlags & ECF_L2) ? 2 : 1; 
+  uint8_t GetCurSvcLevel() {
+    return (m_wFlags & ECF_L2) ? 2 : 1;
   }
   void SetSvcLevel(uint8_t svclvl,uint8_t updatelcd=0);
-  PTHRESH_DATA GetThreshData() { 
-    return &m_ThreshData; 
+  PTHRESH_DATA GetThreshData() {
+    return &m_ThreshData;
   }
-  uint8_t DiodeCheckEnabled() { 
+  uint8_t DiodeCheckEnabled() {
     return (m_wFlags & ECF_DIODE_CHK_DISABLED) ? 0 : 1;
   }
   void EnableDiodeCheck(uint8_t tf);
-  uint8_t VentReqEnabled() { 
+  uint8_t VentReqEnabled() {
     return (m_wFlags & ECF_VENT_REQ_DISABLED) ? 0 : 1;
   }
   void EnableVentReq(uint8_t tf);
   void SaveSettings();
 #ifdef ADVPWR
-  uint8_t GndChkEnabled() { 
+  uint8_t GndChkEnabled() {
     return (m_wFlags & ECF_GND_CHK_DISABLED) ? 0 : 1;
   }
   void EnableGndChk(uint8_t tf);
   void EnableStuckRelayChk(uint8_t tf);
-  uint8_t StuckRelayChkEnabled() { 
+  uint8_t StuckRelayChkEnabled() {
     return (m_wFlags & ECF_STUCK_RELAY_CHK_DISABLED) ? 0 : 1;
   }
 #ifdef AUTOSVCLEVEL
@@ -345,14 +345,14 @@ public:
 #endif
 #endif // GFI
 
-#ifdef TEMPERATURE_MONITORING  
+#ifdef TEMPERATURE_MONITORING
     uint8_t TempChkEnabled() {
     return (m_wFlags & ECF_TEMP_CHK_DISABLED) ? 0 : 1;
   }
   void EnableTempChk(uint8_t tf);
 #endif //TEMPERATURE_MONITORING
 
-  uint8_t SerDbgEnabled() { 
+  uint8_t SerDbgEnabled() {
     return (m_wFlags & ECF_SERIAL_DBG) ? 1 : 0;
   }
   void EnableSerDbg(uint8_t tf);
@@ -391,7 +391,7 @@ public:
     m_CurrentScaleFactor = scale;
     eeprom_write_word((uint16_t*)EOFS_CURRENT_SCALE_FACTOR,scale);
   }
-  uint8_t AmmeterCalEnabled() { 
+  uint8_t AmmeterCalEnabled() {
     return (m_bVFlags & ECVF_AMMETER_CAL) ? 1 : 0;
   }
   void EnableAmmeterCal(uint8_t tf) {
@@ -405,6 +405,9 @@ public:
   void ZeroChargingCurrent() { m_ChargingCurrent = 0; }
   uint8_t GetInstantaneousChargingAmps() {
     readAmmeter();
+    #ifdef VOLTMETER
+      ReadVoltmeter();
+    #endif // VOLTMETER
     return m_AmmeterReading / 1000;
   }
 
@@ -460,7 +463,7 @@ public:
   uint8_t EvConnected() { return m_bVFlags2 & ECVF2_EV_CONNECTED; }
   uint8_t EvConnectedTransition() {
     if (((m_bVFlags2 & (ECVF2_EV_CONNECTED|ECVF2_EV_CONNECTED_PREV)) == 0) ||
-	((m_bVFlags2 & (ECVF2_EV_CONNECTED|ECVF2_EV_CONNECTED_PREV)) == (ECVF2_EV_CONNECTED|ECVF2_EV_CONNECTED_PREV))) return 0;
+        ((m_bVFlags2 & (ECVF2_EV_CONNECTED|ECVF2_EV_CONNECTED_PREV)) == (ECVF2_EV_CONNECTED|ECVF2_EV_CONNECTED_PREV))) return 0;
     else return 1;
   }
 };
@@ -469,6 +472,6 @@ public:
 extern int g_CycleCnt;
 extern long g_CycleHalfStart;
 extern uint8_t g_CycleState;
-#endif 
+#endif
 
 extern J1772EVSEController g_EvseController;

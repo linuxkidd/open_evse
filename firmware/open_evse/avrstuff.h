@@ -61,8 +61,8 @@ public:
 // use these
 #define DPIN_READ(reg,idx) _DPIN_READ(reg,idx)
 #define DPIN_SET(reg,idx) _DPIN_SET(reg,idx)
-#define DPIN_CLR(reg,idx) _DPIN_CLR(reg,idx) 
-#define DPIN_WRITE(reg,idx,val) _DPIN_WRITE(reg,idx,val) 
+#define DPIN_CLR(reg,idx) _DPIN_CLR(reg,idx)
+#define DPIN_WRITE(reg,idx,val) _DPIN_WRITE(reg,idx,val)
  // for (PINx > (uint8_t *)0x100 *must* use DPIN_WRITE_ATOMIC() instead of DPIN_WRITE()
 #define DPIN_WRITE_ATOMIC(reg,idx,val) {AutoCriticalSection acs;_DPIN_WRITE(reg,idx,val)}
 #define DPIN_MODE_INPUT(reg,idx) _DPIN_MODE_INPUT(reg,idx)
@@ -96,7 +96,7 @@ example
 class DigitalPin {
   volatile uint8_t* reg;
   uint8_t bit;
-  
+
 public:
   enum PinMode { INP,INP_PU,OUT };
 
@@ -123,7 +123,7 @@ public:
   void writeAtomic(uint8_t state) {
     AutoCriticalSection acs;
     write(state);
-  }  
+  }
 
   volatile uint8_t* pin() { return reg; }
   volatile uint8_t* ddr() { return reg+1; }
@@ -139,7 +139,7 @@ public:
 class AdcPin {
   static uint8_t refMode;
   uint8_t channel;
-  
+
 public:
   enum PinMode { INP,INP_PU,OUT };
 

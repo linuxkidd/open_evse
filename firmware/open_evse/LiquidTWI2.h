@@ -25,7 +25,7 @@
 #define TEAL 0x6
 #define BLUE 0x4
 #define VIOLET 0x5
-#define WHITE 0x7 
+#define WHITE 0x7
 
 // Standard directional button bits
 #define BUTTON_UP 0x08
@@ -39,7 +39,7 @@
 #define PANELOLU2_ENCODER_B 0x02
 #define PANELOLU2_ENCODER_A 0x01
 
-// readButtons() will only return these bit values 
+// readButtons() will only return these bit values
 // (the Panelolu2 encoder bits are subset of these bits)
 #define ALL_BUTTON_BITS (BUTTON_UP|BUTTON_DOWN|BUTTON_LEFT|BUTTON_RIGHT|BUTTON_SELECT)
 
@@ -128,41 +128,41 @@
 
 class LiquidTWI2 : public Print {
 public:
-	LiquidTWI2(uint8_t i2cAddr,uint8_t detectDevice=0,uint8_t backlightInverted=0);
+        LiquidTWI2(uint8_t i2cAddr,uint8_t detectDevice=0,uint8_t backlightInverted=0);
 
-	void begin(uint8_t cols, uint8_t rows,uint8_t charsize = LCD_5x8DOTS);
+        void begin(uint8_t cols, uint8_t rows,uint8_t charsize = LCD_5x8DOTS);
 
 #ifdef DETECT_DEVICE
-	uint8_t LcdDetected() { return _deviceDetected; }
+        uint8_t LcdDetected() { return _deviceDetected; }
 #endif // DETECT_DEVICE
-	void clear();
-	void home();
+        void clear();
+        void home();
 
-	void noDisplay();
-	void display();
-	void noBlink();
-	void blink();
-	void noCursor();
-	void cursor();
-	void scrollDisplayLeft();
-	void scrollDisplayRight();
-	void leftToRight();
-	void rightToLeft();
-	void autoscroll();
-	void noAutoscroll();
+        void noDisplay();
+        void display();
+        void noBlink();
+        void blink();
+        void noCursor();
+        void cursor();
+        void scrollDisplayLeft();
+        void scrollDisplayRight();
+        void leftToRight();
+        void rightToLeft();
+        void autoscroll();
+        void noAutoscroll();
 
-	void setBacklight(uint8_t status); 
+        void setBacklight(uint8_t status);
 
-	void createChar(uint8_t, uint8_t[]);
-	void setCursor(uint8_t, uint8_t); 
+        void createChar(uint8_t, uint8_t[]);
+        void setCursor(uint8_t, uint8_t);
 #if defined(ARDUINO) && (ARDUINO >= 100) // scl
-	virtual size_t write(uint8_t);
+        virtual size_t write(uint8_t);
 #else
-	virtual void write(uint8_t);
+        virtual void write(uint8_t);
 #endif
-	void command(uint8_t);
+        void command(uint8_t);
 #ifdef MCP23017
-	uint8_t readButtons();
+        uint8_t readButtons();
   //check registers
   uint8_t readRegister(uint8_t);
   //set registers
@@ -177,30 +177,30 @@ public:
   }
 
 private:
-	void send(uint8_t, uint8_t);
+        void send(uint8_t, uint8_t);
 #ifdef MCP23017
-	void burstBits16(uint16_t);
-	void burstBits8b(uint8_t);
-	//void burstBits8a(uint8_t);
+        void burstBits16(uint16_t);
+        void burstBits8b(uint8_t);
+        //void burstBits8a(uint8_t);
 #endif
 #ifdef MCP23008
-	void burstBits8(uint8_t);
+        void burstBits8(uint8_t);
 #endif
 
-	uint8_t _displayfunction;
-	uint8_t _displaycontrol;
-	uint8_t _displaymode;
-	uint8_t _numlines,_currline;
-	uint8_t _i2cAddr;
-	uint8_t _backlightInverted;
+        uint8_t _displayfunction;
+        uint8_t _displaycontrol;
+        uint8_t _displaymode;
+        uint8_t _numlines,_currline;
+        uint8_t _i2cAddr;
+        uint8_t _backlightInverted;
 #ifdef DETECT_DEVICE
-	uint8_t _deviceDetected;
+        uint8_t _deviceDetected;
 #endif // DETECT_DEVICE
 #ifdef MCP23017
-	uint16_t _backlightBits; // only for MCP23017
+        uint16_t _backlightBits; // only for MCP23017
 #endif
 #if defined(MCP23017)&&defined(MCP23008)
-	uint8_t _mcpType; // LTI_MODE_xx
+        uint8_t _mcpType; // LTI_MODE_xx
 #endif
 
 };

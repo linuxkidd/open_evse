@@ -29,7 +29,7 @@ void J1772Pilot::Init()
   ICR1 = TOP;
   // WGM13 -> select P&F mode CS10 -> prescaler = 1
   TCCR1B = _BV(WGM13) | _BV(CS10);
- 
+
 #if (PILOT_IDX == 1) // PB1
   DDRB |= _BV(PORTB1);
   TCCR1A |= _BV(COM1A1);
@@ -47,7 +47,7 @@ void J1772Pilot::Init()
 
 // no PWM pilot signal - steady state
 // PILOT_STATE_P12 = steady +12V (EVSE_STATE_A - VEHICLE NOT CONNECTED)
-// PILOT_STATE_N12 = steady -12V (EVSE_STATE_F - FAULT) 
+// PILOT_STATE_N12 = steady -12V (EVSE_STATE_F - FAULT)
 void J1772Pilot::SetState(PILOT_STATE state)
 {
   AutoCriticalSection asc;
@@ -77,7 +77,7 @@ void J1772Pilot::SetState(PILOT_STATE state)
 
 
 // set EVSE current capacity in Amperes
-// duty cycle 
+// duty cycle
 // outputting a 1KHz square wave to digital pin 10 via Timer 1
 //
 int J1772Pilot::SetPWM(int amps)
@@ -104,7 +104,7 @@ int J1772Pilot::SetPWM(int amps)
 #else // PB2
   OCR1B = cnt;
 #endif
-  
+
   m_State = PILOT_STATE_PWM;
 
   return 0;

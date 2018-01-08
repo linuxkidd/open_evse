@@ -13,7 +13,7 @@ EnergyMeter::EnergyMeter()
   if (eeprom_read_dword((uint32_t*)EOFS_KWH_ACCUMULATED) == 0xffffffff) { // Check for unitialized eeprom condition so it can begin at 0kWh
     eeprom_write_dword((uint32_t*)EOFS_KWH_ACCUMULATED,0); //  Set the four bytes to zero just once in the case of unitialized eeprom
   }
-  
+
   m_wattHoursTot = eeprom_read_dword((uint32_t*)EOFS_KWH_ACCUMULATED);        // get the stored value for the kWh from eeprom
 }
 
@@ -34,14 +34,14 @@ void EnergyMeter::Update()
   if (inSession()) {
     uint8_t relayclosed = g_EvseController.RelayIsClosed();
 
-    
+
     if (relayclosed) {
       if (!relayClosed()) {
-	// relay just closed - don't calc, just reset timer
-	m_lastUpdateMs = millis();
+              // relay just closed - don't calc, just reset timer
+              m_lastUpdateMs = millis();
       }
       else {
-	calcUsage();
+              calcUsage();
       }
     }
 
@@ -57,7 +57,7 @@ void EnergyMeter::calcUsage()
 {
   unsigned long curms = millis();
   unsigned long dms = curms - m_lastUpdateMs;
-  if (dms > KWH_CALC_INTERVAL_MS) { 
+  if (dms > KWH_CALC_INTERVAL_MS) {
       uint32_t ma = g_EvseController.GetChargingCurrent();
 #ifdef VOLTMETER
       m_wattSeconds += ((g_EvseController.GetVoltage()/1000UL) * (ma/1000UL) * dms) / 1000UL;
@@ -90,7 +90,7 @@ void EnergyMeter::endSession()
 
 void EnergyMeter::SaveTotkWh()
 {
-  eeprom_write_dword((uint32_t*)EOFS_KWH_ACCUMULATED,m_wattHoursTot); 
+  eeprom_write_dword((uint32_t*)EOFS_KWH_ACCUMULATED,m_wattHoursTot);
 }
 
 #endif // KWH_RECORDING

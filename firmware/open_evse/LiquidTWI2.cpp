@@ -3,7 +3,7 @@
 /*
   LiquidTWI2 High Performance i2c LCD driver for MCP23008 & MCP23017
   hacked by Sam C. Lin / http://www.lincomatic.com
-  from 
+  from
    LiquidTWI by Matt Falcon (FalconFour) / http://falconfour.com
    logic gleaned from Adafruit RGB LCD Shield library
    Panelolu2 support by Tony Lock / http://blog.think3dprint3d.com
@@ -32,9 +32,9 @@
 //MCP23017 - Adafruit RGB LCD Shield
 // bit pattern for the burstBits function is
 //
-//  B7 B6 B5 B4 B3 B2 B1 B0 A7 A6 A5 A4 A3 A2 A1 A0 - MCP23017 
-//  RS RW EN D4 D5 D6 D7 LB LG LR BZ B4 B3 B2 B1 B0 
-//  15 14 13 12 11 10 9  8  7  6  5  4  3  2  1  0  
+//  B7 B6 B5 B4 B3 B2 B1 B0 A7 A6 A5 A4 A3 A2 A1 A0 - MCP23017
+//  RS RW EN D4 D5 D6 D7 LB LG LR BZ B4 B3 B2 B1 B0
+//  15 14 13 12 11 10 9  8  7  6  5  4  3  2  1  0
 #define M17_BIT_RS 0x8000
 #define M17_BIT_RW 0x4000
 #define M17_BIT_EN 0x2000
@@ -73,17 +73,17 @@ static inline uint8_t wirerecv(void) {
 // When the display powers up, it is configured as follows:
 //
 // 1. Display clear
-// 2. Function set: 
-//    DL = 0; 4-bit interface data 
-//    N = 0; 1-line display 
-//    F = 0; 5x8 dot character font 
-// 3. Display on/off control: 
-//    D = 0; Display off 
-//    C = 0; Cursor off 
-//    B = 0; Blinking off 
-// 4. Entry mode set: 
-//    I/D = 1; Increment by 1 
-//    S = 0; No shift 
+// 2. Function set:
+//    DL = 0; 4-bit interface data
+//    N = 0; 1-line display
+//    F = 0; 5x8 dot character font
+// 3. Display on/off control:
+//    D = 0; Display off
+//    C = 0; Cursor off
+//    B = 0; Blinking off
+// 4. Entry mode set:
+//    I/D = 1; Increment by 1
+//    S = 0; No shift
 //
 // Note, however, that resetting the Arduino doesn't reset the LCD, so we
 // can't assume that its in that state when a sketch starts (and the
@@ -136,8 +136,8 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
           return;
         }
     }
-#endif 
-	  
+#endif
+
     Wire.beginTransmission(MCP23017_ADDRESS | _i2cAddr);
     wiresend(MCP23017_IODIRB);
     wiresend(0xFF);  // all inputs on port B
@@ -149,7 +149,7 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
           return;
         }
     }
-#endif 
+#endif
     */
 
     // now set up input/output pins
@@ -164,12 +164,12 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
           return;
         }
     }
-#endif 
-    
+#endif
+
     // set the button pullups
     Wire.beginTransmission(MCP23017_ADDRESS | _i2cAddr);
     wiresend(MCP23017_GPPUA);
-    wiresend(0x1F);	
+    wiresend(0x1F);
     result = Wire.endTransmission();
 #ifdef DETECT_DEVICE
     if (result) {
@@ -178,8 +178,8 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
           return;
         }
     }
-#endif 
-    
+#endif
+
     Wire.beginTransmission(MCP23017_ADDRESS | _i2cAddr);
     wiresend(MCP23017_IODIRB);
     wiresend(0x00); // all pins output
@@ -191,7 +191,7 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
           return;
         }
     }
-#endif 
+#endif
 #endif // MCP23017
 #if defined(MCP23017)&&defined(MCP23008)
   }
@@ -210,7 +210,7 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
     wiresend(0x00);
     wiresend(0x00);
     wiresend(0x00);
-    wiresend(0x00);	
+    wiresend(0x00);
     result = Wire.endTransmission();
 #ifdef DETECT_DEVICE
     if (result) {
@@ -219,8 +219,8 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
           return;
         }
     }
-#endif 
-	  
+#endif
+
     // now we set the GPIO expander's I/O direction to output since it's soldered to an LCD output.
     Wire.beginTransmission(MCP23008_ADDRESS | _i2cAddr);
     wiresend(MCP23008_IODIR);
@@ -233,7 +233,7 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
           return;
         }
     }
-#endif 
+#endif
 #endif // MCP23008
 #if defined(MCP23017)&&defined(MCP23008)
   }
@@ -268,12 +268,12 @@ void LiquidTWI2::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 #endif // defined(MCP23017)&&defined(MCP23008)
 #ifdef MCP23017
     _backlightBits = 0; // all backlight LED's on
-	  
+
     // bit pattern for the burstBits function is
     //
-    //  B7 B6 B5 B4 B3 B2 B1 B0 A7 A6 A5 A4 A3 A2 A1 A0 - MCP23017 
-    //  15 14 13 12 11 10 9  8  7  6  5  4  3  2  1  0  
-    //  RS RW EN D4 D5 D6 D7 B  G  R     B4 B3 B2 B1 B0 
+    //  B7 B6 B5 B4 B3 B2 B1 B0 A7 A6 A5 A4 A3 A2 A1 A0 - MCP23017
+    //  15 14 13 12 11 10 9  8  7  6  5  4  3  2  1  0
+    //  RS RW EN D4 D5 D6 D7 B  G  R     B4 B3 B2 B1 B0
     for (uint8_t i=0;i < 3;i++) {
       burstBits8b((M17_BIT_EN|M17_BIT_D5|M17_BIT_D4) >> 8);
       burstBits8b((M17_BIT_D5|M17_BIT_D4) >> 8);
@@ -490,9 +490,9 @@ uint8_t LiquidTWI2::readButtons(void) {
   if (!_deviceDetected) return 0;
 #endif
   Wire.beginTransmission(MCP23017_ADDRESS | _i2cAddr);
-  wiresend(MCP23017_GPIOA);	
+  wiresend(MCP23017_GPIOA);
   Wire.endTransmission();
-  
+
   Wire.requestFrom(MCP23017_ADDRESS | _i2cAddr, 1);
   return ~wirerecv() & ALL_BUTTON_BITS;
 }
@@ -513,7 +513,7 @@ void LiquidTWI2::setBacklight(uint8_t status) {
     if (status & RED) _backlightBits &= ~M17_BIT_LR; // red on
     if (status & GREEN) _backlightBits &= ~M17_BIT_LG; // green on
     if (status & BLUE) _backlightBits &= ~M17_BIT_LB; // blue on
-    
+
     burstBits16(_backlightBits);
 #endif // MCP23017
 #if defined(MCP23017)&&defined(MCP23008)
@@ -537,10 +537,10 @@ void LiquidTWI2::send(uint8_t value, uint8_t mode) {
 #ifdef MCP23017
     // BURST SPEED, OH MY GOD
     // the (now High Speed!) I/O expander pinout
-    //  B7 B6 B5 B4 B3 B2 B1 B0 A7 A6 A5 A4 A3 A2 A1 A0 - MCP23017 
-    //  15 14 13 12 11 10 9  8  7  6  5  4  3  2  1  0  
-    //  RS RW EN D4 D5 D6 D7 B  G  R     B4 B3 B2 B1 B0 
-    
+    //  B7 B6 B5 B4 B3 B2 B1 B0 A7 A6 A5 A4 A3 A2 A1 A0 - MCP23017
+    //  15 14 13 12 11 10 9  8  7  6  5  4  3  2  1  0
+    //  RS RW EN D4 D5 D6 D7 B  G  R     B4 B3 B2 B1 B0
+
     // n.b. RW bit stays LOW to write
     uint8_t buf = _backlightBits >> 8;
     // send high 4 bits
@@ -548,7 +548,7 @@ void LiquidTWI2::send(uint8_t value, uint8_t mode) {
     if (value & 0x20) buf |= M17_BIT_D5 >> 8;
     if (value & 0x40) buf |= M17_BIT_D6 >> 8;
     if (value & 0x80) buf |= M17_BIT_D7 >> 8;
-    
+
     if (mode) buf |= (M17_BIT_RS|M17_BIT_EN) >> 8; // RS+EN
     else buf |= M17_BIT_EN >> 8; // EN
 
@@ -557,7 +557,7 @@ void LiquidTWI2::send(uint8_t value, uint8_t mode) {
     // resend w/ EN turned off
     buf &= ~(M17_BIT_EN >> 8);
     burstBits8b(buf);
-    
+
     // send low 4 bits
     buf = _backlightBits >> 8;
     // send high 4 bits
@@ -565,12 +565,12 @@ void LiquidTWI2::send(uint8_t value, uint8_t mode) {
     if (value & 0x02) buf |= M17_BIT_D5 >> 8;
     if (value & 0x04) buf |= M17_BIT_D6 >> 8;
     if (value & 0x08) buf |= M17_BIT_D7 >> 8;
-    
+
     if (mode) buf |= (M17_BIT_RS|M17_BIT_EN) >> 8; // RS+EN
     else buf |= M17_BIT_EN >> 8; // EN
-    
+
     burstBits8b(buf);
-    
+
     // resend w/ EN turned off
     buf &= ~(M17_BIT_EN >> 8);
     burstBits8b(buf);
@@ -655,9 +655,9 @@ void LiquidTWI2::burstBits8(uint8_t value) {
 uint8_t LiquidTWI2::readRegister(uint8_t reg) {
   // read a register
   Wire.beginTransmission(MCP23017_ADDRESS | _i2cAddr);
-  wiresend(reg);	
+  wiresend(reg);
   Wire.endTransmission();
-  
+
   Wire.requestFrom(MCP23017_ADDRESS | _i2cAddr, 1);
   return wirerecv();
 }
@@ -670,18 +670,18 @@ void LiquidTWI2::setRegister(uint8_t reg, uint8_t value) {
     Wire.endTransmission();
 }
 
-//cycle the buzzer pin at a certain frequency (hz) for a certain duration (ms) 
+//cycle the buzzer pin at a certain frequency (hz) for a certain duration (ms)
 //note: a 100Khz TWI/I2C bus on a 16Mhz Arduino will max out at around 1500Hz freq
 void LiquidTWI2::buzz(long duration, uint16_t freq) {
   int currentRegister = 0;
 
   // read gpio register
   Wire.beginTransmission(MCP23017_ADDRESS | _i2cAddr);
-  wiresend(MCP23017_GPIOA);	
+  wiresend(MCP23017_GPIOA);
   Wire.endTransmission();
   Wire.requestFrom(MCP23017_ADDRESS | _i2cAddr, 1);
   currentRegister = wirerecv();
-  
+
   duration *=1000; //convert from ms to us
   unsigned long cycletime = 1000000UL / freq; // period in us
   unsigned long cycles = (unsigned long)duration / cycletime;
